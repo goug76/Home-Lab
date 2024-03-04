@@ -1,0 +1,18 @@
+---
+
+- hosts: all
+
+  tasks:
+
+    - name: sudo
+      apt:
+        name: sudo
+        update_cache: yes
+        cache_valid_time: 3600
+        state: latest
+    
+    - name: add ssh key
+      authorized_key:
+        user: root
+        key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDF/W8bGs/S93kOnikwvmy4VM9wf1je1sPqIWyHlhiNcKrCqMZNsqsug3t94h5mdoEY/mNkugIsn0A9GAsNAMQK+KcVseSIp2KBwP6hadEVCPJV1djJ2a0QSHlRA+UgCqlkBHaYlfQvNUvn1reUh3Ug8h5JCXM8z/WXVuFOWGi+WKhGkaeaah+iJznOrt5oKjRPMSe0o529OvXS0AWx0kocNZ3sfiFoctUOtCFCzlvYzgEf3L2CibwQVwAqFWOesGSHb2UZ9WwGO9unG93AA3k7H2KPR4UMI99ivOHSUJIGvV2CBnoH/HJVYx+48r+C0Iyu0Po5ThLGrFVD7lhlDsrFOUMQNgmDrQNgxT9u8WgPVdrdGg2JtNgkVkh2ukH6Mkc9wL6j/wYW68e+XNFgP3YrlEn3oofgmeQir8EFJvhJNQS1r1Jsa4dOFLLMN5DgyT5pQsLvT6O+2rlc8COT/MSGae1Q4v/zSmCPN6yJXEe6HLx/8T5x/FXvVugi52PPIJE= goug7@Gougs-PC
+        
