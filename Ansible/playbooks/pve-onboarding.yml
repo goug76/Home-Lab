@@ -15,8 +15,10 @@
       user:
         name: goug76
         password: "{{sudo}}"
-        groups: "sudo"
-        shell: '/bin/bash'
+        groups: sudo
+        shell: /bin/bash
+        createhome: yes
+        home: /home/goug76
     
     - name: add ssh key
       authorized_key:
