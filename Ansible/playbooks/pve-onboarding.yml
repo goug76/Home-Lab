@@ -14,7 +14,7 @@
     - name: create user
       user:
         name: goug76
-        password: "{{sudo}}"
+        password: "{{pwd}}"
         groups: sudo
         shell: /bin/bash
         createhome: yes
