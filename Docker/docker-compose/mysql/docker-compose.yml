@@ -1,0 +1,23 @@
+version: "3"
+services:
+  mysql:
+    container_name: mysql
+    restart: unless-stopped
+    image: mysql
+    hostname: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - /home/${MYSQL_USER}/mysql:/var/lib/mysql
+    environment:
+      MYSQL_USER: '${MYSQL_USER}'
+      MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
+      MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
+      TZ: America/New_York
+    networks:
+      - mysql-network
+      
+networks:
+  mysql-network:
+    driver: bridge
+    name: mysql-network

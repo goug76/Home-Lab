@@ -1,0 +1,63 @@
+services:
+  mysql:
+    container_name: mysql
+    restart: unless-stopped
+    image: mysql
+    hostname: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - /home/goug76/mysql:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: US.goug.76
+      MYSQL_DATABASE: semaphore
+      MYSQL_USER: goug76
+      MYSQL_PASSWORD: US.goug.76
+    networks:
+      - mysql-network
+  semaphore:
+    container_name: semaphore
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    image: semaphoreui/semaphore:latest
+    environment:
+      SEMAPHORE_DB_USER: goug76
+      SEMAPHORE_DB_PASS: US.goug.76
+      SEMAPHORE_DB_HOST: mysql # for postgres, change to: postgres
+      SEMAPHORE_DB_PORT: 3306 # change to 5432 for postgres
+      SEMAPHORE_DB_DIALECT: mysql # for postgres, change to: postgres
+      SEMAPHORE_DB: semaphore
+      SEMAPHORE_PLAYBOOK_PATH: /tmp/semaphore/
+      SEMAPHORE_ADMIN_PASSWORD: US.goug.76
+      SEMAPHORE_ADMIN_NAME: goug76
+      SEMAPHORE_ADMIN_EMAIL: goug76@gmail.com
+      SEMAPHORE_ADMIN: goug76
+      SEMAPHORE_ACCESS_KEY_ENCRYPTION: B3sGMM+UjzNGZm6wb0hUe6wGvVVx36JITeoMcprT5Fo=
+    depends_on:
+      - mysql # for postgres, change to: postgres
+    networks:
+      - mysql-network
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    depends_on:
+      - mysql
+    image: phpmyadmin/phpmyadmin
+    restart: unless-stopped
+    ports:
+      - 8081:80
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: US.goug.76
+      TZ: America/New_York
+    volumes:
+      - /home/goug76/phpmyadmin/themes:/www/html/themes/
+    networks:
+      - mysql-network
+      
+networks:
+  mysql-network:
+    driver: bridge
+    name: mysql-network

@@ -1,0 +1,70 @@
+---
+version: '3.4'
+
+services:
+  redis:
+    container_name: redis
+    image: docker.io/library/redis:alpine
+    command: --save 60 1 --loglevel warning
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 3s
+    volumes:
+      - /home/${POSTGRES_USER}/redis:/data
+    networks:
+      - controller-network
+  server:
+    container_name: authentik-server
+    image: ghcr.io/goauthentik/server:2024.2.2
+    restart: unless-stopped
+    command: server
+    environment:
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_POSTGRESQL__HOST: postgres
+      AUTHENTIK_POSTGRESQL__USER: ${POSTGRES_USER}
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${POSTGRES_PASSWORD}
+      AUTHENTIK_ERROR_REPORTING__ENABLED: true
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+    volumes:
+      - /home/${POSTGRES_USER}/authentik/media:/media
+      - /home/${POSTGRES_USER}/authentik/custom-templates:/templates
+    ports:
+      - "9000:9000"
+      - "8443:9443"
+    depends_on:
+      - redis
+    networks:
+      - controller-network
+  worker:
+    container_name: authentik-worker
+    image: ghcr.io/goauthentik/server:2024.2.2
+    restart: unless-stopped
+    command: worker
+    environment:
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_POSTGRESQL__HOST: postgres
+      AUTHENTIK_POSTGRESQL__USER: ${POSTGRES_USER}
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${POSTGRES_PASSWORD}
+      AUTHENTIK_ERROR_REPORTING__ENABLED: true
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+    user: root
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/${POSTGRES_USER}/authentik/media:/media
+      - /home/${POSTGRES_USER}/authentik/certs:/certs
+      - /home/${POSTGRES_USER}/authentik/custom-templates:/templates
+    depends_on:
+      - redis
+    networks:
+      - controller-network
+
+networks:
+  controller-network:
+    driver: bridge
+    name: controller-network

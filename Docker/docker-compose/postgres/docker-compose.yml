@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    volumes: 
+      - /home/${POSTGRES_USER}/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: '${POSTGRES_USER}'
+      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}'
+      TZ: America/New_York
+    networks:
+      - controller-network
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - 8082:80
+    volumes: 
+      - /home/${POSTGRES_USER}/pgadmin:/var/lib/pgadmin
+      - /home/${POSTGRES_USER}/pgadmin:/pgadmin4/config_local.py
+    environment:
+      PGADMIN_DEFAULT_EMAIL: '${PGADMIN_DEFAULT_EMAIL}'
+      PGADMIN_DEFAULT_PASSWORD: '${PGADMIN_DEFAULT_PASSWORD}'
+      TZ: America/New_York
+    networks:
+      - controller-network
+ 
+networks:
+  controller-network:
+    driver: bridge
+    name: controller-network

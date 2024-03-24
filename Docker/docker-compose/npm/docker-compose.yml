@@ -1,0 +1,16 @@
+version: '3'
+services:
+  npm:
+    container_name: npm
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    environment:
+      - DOCKER_MODS=ghcr.io/themepark-dev/theme.park:sonarr
+    volumes:
+      - /home/${USER}/npm/data:/data
+      - /home/${USER}/npm/letsencrypt:/etc/letsencrypt
+      - /home/${USER}/npm/98-themepark:/etc/cont-init.d/99-themepark

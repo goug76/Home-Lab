@@ -1,0 +1,34 @@
+version: "3"
+services:
+  semaphore:
+    container_name: semaphore
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    image: semaphoreui/semaphore:latest
+    environment:
+      SEMAPHORE_DB_USER: ${USER}
+      SEMAPHORE_DB_PASS: '${SEMAPHORE_DB_PASS}'
+      SEMAPHORE_DB_HOST: postgres
+      SEMAPHORE_DB_PORT: 5432
+      SEMAPHORE_DB_DIALECT: postgres
+      SEMAPHORE_DB: semaphore
+      SEMAPHORE_PLAYBOOK_PATH: /tmp/semaphore/
+      SEMAPHORE_ADMIN_PASSWORD: '${SEMAPHORE_ADMIN_PASSWORD}'
+      SEMAPHORE_ADMIN_NAME: John Goughenour
+      SEMAPHORE_ADMIN_EMAIL: ${USER}@gmail.com
+      SEMAPHORE_ADMIN: ${USER}
+      SEMAPHORE_ACCESS_KEY_ENCRYPTION: '${SEMAPHORE_ACCESS_KEY_ENCRYPTION}'
+      ANSIBLE_HOST_KEY_CHECKING: false
+      ANSIBLE_PYTHON_INTERPRETER: auto_silent
+      TZ: America/New_York
+    volumes:
+      - /home/${USER}/semaphore/inventory/:/inventory
+      - /home/${USER}/semaphore/authorized-keys/:/authorized-keys
+      # - /home/${USER}/semaphore/config/:/etc/semaphore
+    networks:
+      - controller-network
+
+networks:
+  controller-network:
+    external: true
