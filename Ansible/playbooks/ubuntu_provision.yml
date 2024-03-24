@@ -42,6 +42,17 @@
       pip:
         name: docker
 
+    - name: Add Docker group
+      group:
+        name: docker
+        state: present
+
+    - name: Add user to Docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: true
+
     - name: Check if reboot required
       stat:
         path: /var/run/reboot-required
