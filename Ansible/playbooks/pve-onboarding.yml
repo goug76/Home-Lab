@@ -1,5 +1,4 @@
 ---
-
 - name: Proxmox Onboarding
   hosts: all
 
