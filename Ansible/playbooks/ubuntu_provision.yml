@@ -1,5 +1,6 @@
 ---
-- hosts: all
+- name: Ubuntu Provisioning
+  hosts: all
   become: true
 
   tasks:
@@ -49,7 +50,7 @@
 
     - name: Add user to Docker group
       user:
-        name: "{{ ansible_user }}"
+        name: "{{ user }}"
         groups: docker
         append: true
 

@@ -1,30 +1,39 @@
 ---
 
-- hosts: all
+- name: Proxmox Onboarding
+  hosts: all
 
   tasks:
 
-    - name: sudo
+    - name: Install required system packages
       apt:
-        name: sudo
+        pkg:
+          - sudo
+          - python3-proxmoxer
+          - python3-requests
         update_cache: yes
         cache_valid_time: 3600
         state: latest
 
     - name: create user
       user:
-        name: goug76
+        name: "{{user}}"
         password: "{{pwd}}"
         groups: sudo
         state: present
         shell: /bin/bash
         system: no
         createhome: yes
-        home: /home/goug76
+        home: /home/"{{user}}"
     
     - name: add ssh key
       authorized_key:
-        user: goug76
+        user: "{{user}}"
         key: "{{ssh_key}}"
+    
+    - name: add Ansible ssh key
+      authorized_key:
+        user: "{{user}}"
+        key: "{{ansible_key}}"
 
 # Password can't be plain text so run this command to hash it: mkpasswd --method=sha-512
