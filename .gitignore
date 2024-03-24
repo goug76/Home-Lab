@@ -1,1 +1,5 @@
+# Security
 *.env
+
+# Common
+.vscode/
